@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <head>
-  <title>OpenAI Quickstart</title>
-  <link
-    rel="shortcut icon"
-    href="{{ url_for('static', filename='dog.png') }}"
-  />
-  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
-</head>
-
+  <title>OpenAI GPT-3 Captions</title>
 <body>
-  <img src="{{ url_for('static', filename='dog.png') }}" class="icon" />
-  <h3>Name my pet</h3>
-  <form action="/" method="post">
-    <input type="text" name="animal" placeholder="Enter an animal" required />
-    <input type="submit" value="Generate names" />
+  <h3>Generate caption for your data visualization with GPT-3</h3>
+
+  <h4>Inputs</h4>
+  <form action="/" method="post" enctype="multipart/form-data">
+    <label for="dataset">Upload your dataset:</label><br>
+    <input name="dataset" type="file"><br>
+    <label for="visualization">Upload your visualization:</label><br>
+    <input name="visualization" type="file"><br>
+    Maybe some more inputs...<br>
+    <input type="submit" value="Generate caption" />
   </form>
+
+  <h4>Results</h4>
   {% if result %}
-  <div class="result">{{ result }}</div>
+  <div class="result">
+
+  <ul>
+    {% for info, info_content in result.items() %}
+    <li>
+      <b>{{info}}</b>: {{info_content}}
+    </li>
+    {% endfor %}
+  </ul>
+
+  </div>
   {% endif %}
+
 </body>
