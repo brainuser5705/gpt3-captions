@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if metadata %}
+
+        <h3>Analysis Results:</h3>
+
+        <h4>Original Plot:</h4>
+        {% if img_name %}
+            <img width="500" src="{{ url_for('static', filename=img_name) }}"/>
+        {% endif %}
+
+        <div class="metadata">
+
+            <ul>
+                {% for info, info_content in metadata.items() %}
+                <li>
+                <b>{{info}}</b>: {{info_content}}
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% else %}
+
+        <h3>Here's what your data looks like:</h3>
+
+        {% if img_name %}
+
+            <img width="500" src="{{ url_for('static', filename=img_name) }}"/>
+
+            <h3>Select which type of analysis you wish to perform:</h3>
+
+            <!-- form action must redirect to the url of the analyze() view -->
+            <form action="/analyze" method="POST">
+                <input type="checkbox" id="cluster" name="cluster" value="Cluster">
+                <label for="cluster">Cluster</label><br>
+                <input type="checkbox" id="regression" name="regression" value="Regression">
+                <label for="regression">Regression</label><br>
+                <input type="checkbox" id="outlier" name="outlier" value="Outlier">
+                <label for="outlier">Outlier</label><br>
+                <input type="Submit" value="Analyze data">
+            </form>
+
+        {% endif %}
+
+    {% endif %}
+
+{% endblock content %}
