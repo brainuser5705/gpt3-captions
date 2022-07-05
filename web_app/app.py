@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt
 
 import pandas as pd
 
-from flask import make_response
+from flask import make_response, session
 
 ALLOWED_DATASET_EXTENSIONS = {'csv'}
 ALLOWED_VISUALIZATION_EXTENSIONS = {'jpg', 'png'}
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -23,17 +24,19 @@ def index():
 
         # get the uploaded dataset from the form
         dataset = request.files['dataset']
-        # Read in the bytes
         bytes = dataset.read()
-        print('Bytes', bytes)
-
-        plot_data(bytes_to_df(bytes))
-        img_name= create_plot_img('plot', 'png')
+        # convert bytes to string
+        data = bytes.decode()
+        # must make data into a file like obj for Pandas
+        df = pd.read_csv(StringIO(data))
 
         # include url_for to get the url for the analyze view
         resp = make_response(redirect(url_for('analyze')))
-        resp.set_cookie('dataset', dataset.read())
-        resp.set_cookie('img_name', img_name)
+        session['data'] = data
+
+        plot_data(df)
+        img_name= create_plot_img('plot', 'png')
+        session['img_name'] = img_name
 
         return resp
 
@@ -42,18 +45,11 @@ def index():
 @app.route("/analyze", methods=("GET", "POST"))
 def analyze():
 
-    img_name = request.cookies.get('img_name')
+    img_name = session['img_name']
 
     if request.method == 'POST':
 
-        # convert the dataset into df then into bytes
-        # upload the dataset?
-        print('Data:', request.cookies.get('dataset'))
-        print(type(request.cookies.get('dataset')))
-
-        data = bytes_to_df(request.cookies.get('dataset'))
-        # access the inputs through request.form which is a dictionary of the name-value pairs
-
+        data = pd.read_csv(StringIO(session['data']))
         metadata = get_data_info(data)
         return render_template('analyze.html', img_name=img_name,metadata=metadata)
         
@@ -63,13 +59,6 @@ def analyze():
 @app.route("/generate", methods=("GET", "POST"))
 def generate():
     pass
-
-
-def bytes_to_df(bytes):
-    # Decode bytes into string
-    decode = bytes.decode()
-    # convert to 'file-like obj' for Pandas's read_csv
-    return pd.read_csv(StringIO(decode))
 
 # Analysis can be done here
 def get_data_info(data):
