@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Metadata about your uploaded dataset:</h3>
+
+<div class="metadata">
+
+    <ul>
+        {% for info, info_content in metadata.items() %}
+        <li>
+        <b>{{info}}</b>: {{info_content}}
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+<h3>Configure your plot and analysis details</h3>
+
+<p>
+    <i>Note: This program only works for scatter plot appropiate data (bivariate, numerical)</i>
+</p>
+
+<!-- form action must redirect to the url of the analyze() view -->
+<form action="/analyze" method="POST">
+    
+    <label for="title">Title for Plot:</label>
+    <input type="text" id="title" name="title"><br>
+
+    <label for="x-axis">X-axis Column</label>
+    <select name="x-axis" id="x-axis" required>
+        {% for column in metadata['columns'] %}
+            <option value="{{ column }}">{{ column }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="y-axis">Y-axis Column</label>
+    <select name="y-axis" id="y-axis" required>
+        {% for column in metadata['columns'] %}
+            <option value="{{ column }}">{{ column }}</option>
+        {% endfor %}
+    </select><br>
+
+    <input type="submit" value="Submit">
+
+</form>
+
+
+{% endblock content %}

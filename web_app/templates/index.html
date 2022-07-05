@@ -2,13 +2,12 @@
 
 {% block content %}
 
-<h3>Upload your dataset.</h3>
+  <h3>Upload your dataset.</h3>
 
-<form action="/" method="post" enctype="multipart/form-data">
-  <label for="dataset">Upload your dataset:</label><br>
-  <input id="dataset" name="dataset" type="file"><br>
-  <input type="submit" value="Upload" />
-</form>
-
+  <form action="/config" method="post" enctype="multipart/form-data">
+    <label for="dataset">Upload your dataset:</label><br>
+    <input id="dataset" name="dataset" type="file"><br>
+    <input type="submit" value="Upload" />
+  </form>
 
 {% endblock content %}
