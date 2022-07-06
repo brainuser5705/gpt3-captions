@@ -7,6 +7,8 @@ from flask import Flask, redirect, render_template, request, url_for, session
 import matplotlib.pyplot as plt
 import pandas as pd
 
+import common
+import ml
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -48,16 +50,24 @@ def analyze():
         
         orig_data = pd.read_csv(StringIO(session['data']))
         new_data = orig_data[[xaxis_col, yaxis_col]] # set 0 to x axis, 1 to y axis
+        
+        session['data'] = new_data.to_csv() 
 
-        plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
-        img_name= create_plot_img('plot', 'png')
+        common.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
+        img_name= common.create_plot_img('plot', 'png')
             
         return render_template("analyze.html", img_name=img_name)
 
 
-@app.route("/generate", methods=("GET", "POST"))
+@app.route("/generate", methods=["POST"])
 def generate():
-    pass
+
+    data = pd.read_csv(StringIO(session['data']))
+    
+    if request.form['regression']:
+        lin_reg = ml.regression(data)
+
+    return render_template('index.html')
 
 
 # Analysis can be done here
@@ -69,16 +79,3 @@ def get_data_info(data):
     }
     return data_info
 
-def plot_data(data, title, xlabel, ylabel):
-    """
-    Assumes that data is a Pandas dataframes with two columns
-    """
-    plt.scatter(data.iloc[:,0], data.iloc[:,1])
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-def create_plot_img(fig_name, fig_extension):
-    img_name = fig_name + '.' + fig_extension
-    plt.savefig(os.path.join('static', img_name), format=fig_extension, dpi=300)
-    return img_name
