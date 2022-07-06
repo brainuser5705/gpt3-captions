@@ -11,8 +11,9 @@ from sklearn.linear_model import LinearRegression
 np.random.seed(42)
 
 def process_data(data):
-    x = data[data.columns[0]]
-    y = data[data.columns[1]]
+    # data.columns contains another column at front, so have to use negative indices
+    x = data[data.columns[-2]]
+    y = data[data.columns[-1]]
     return x, y
 
 def regression(data):
@@ -27,10 +28,10 @@ def regression(data):
     # generate plot
     y_preds = lin_reg.predict(x_2d)
     common.plot_data(data)
-    plt.plot(x, y_preds)
-    common.create_plot_img('lin_reg_plot', 'png')
+    plt.plot(x, y_preds)    # plot the line
+    img_name = common.create_plot_img('lin_reg_plot', 'png')
 
-    return lin_reg
+    return img_name, lin_reg
     
 def cluster():
     pass

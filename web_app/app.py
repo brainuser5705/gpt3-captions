@@ -1,9 +1,10 @@
 from io import StringIO
 import os
 
-import openai
 from flask import Flask, redirect, render_template, request, url_for, session
+from flask_session import Session   # https://flask-session.readthedocs.io/en/latest/
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -11,13 +12,17 @@ import common
 import ml
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY')    # to use for sessions
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Using server side sessions for larger cookie space
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
+mpl.use('Agg')  # Need this because of the main thread error, switching to backend that does not require GUI
 
 @app.route("/", methods=("GET", "POST"))
 def index():
+    session.clear()
     return render_template("index.html")
 
 
@@ -50,9 +55,10 @@ def analyze():
         
         orig_data = pd.read_csv(StringIO(session['data']))
         new_data = orig_data[[xaxis_col, yaxis_col]] # set 0 to x axis, 1 to y axis
-        
+
         session['data'] = new_data.to_csv() 
 
+        plt.close()
         common.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
         img_name= common.create_plot_img('plot', 'png')
             
@@ -63,11 +69,11 @@ def analyze():
 def generate():
 
     data = pd.read_csv(StringIO(session['data']))
-    
-    if request.form['regression']:
-        lin_reg = ml.regression(data)
 
-    return render_template('index.html')
+    if request.form['regression']:
+        lin_reg_img, lin_reg = ml.regression(data)
+
+    return render_template('generate.html', lin_reg_img=lin_reg_img)
 
 
 # Analysis can be done here

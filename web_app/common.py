@@ -5,7 +5,7 @@ def plot_data(data, title='', xlabel='', ylabel=''):
     """
     Assumes that data is a Pandas dataframes with two columns
     """
-    plt.scatter(data.iloc[:,0], data.iloc[:,1], s=2)
+    plt.scatter(data.iloc[:,-2], data.iloc[:,-1], s=2)
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)

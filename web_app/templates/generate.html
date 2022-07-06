@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h3>Analysis Results: </h3> 
+    
+    {% if lin_reg_img %}
+
+        <h4>Linear Regression</h4>
+        <img width="500" src="{{ url_for('static', filename=lin_reg_img) }}"/>
+
+    {% endif %}
+
+{% endblock content %}
