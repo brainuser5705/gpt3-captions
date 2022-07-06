@@ -3,7 +3,14 @@
 {% block content %}
 
     <h3>Analysis Results: </h3> 
+
+    {% if cluster_img %}
+
+        <h4>Cluster</h4>
+        <img width="500" src="{{ url_for('static', filename=cluster_img) }}"/>
     
+    {% endif %}
+
     {% if lin_reg_img %}
 
         <h4>Linear Regression</h4>
@@ -11,4 +18,12 @@
 
     {% endif %}
 
+    {% if outlier_img %}
+
+        <h4>Outlier</h4>
+        <img width="500" src="{{ url_for('static', filename=outlier_img) }}"/>
+
+    {% endif %}
+
 {% endblock content %}
+   

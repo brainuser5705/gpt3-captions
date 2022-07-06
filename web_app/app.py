@@ -8,7 +8,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import common
+import plotting
 import ml
 
 app = Flask(__name__)
@@ -56,11 +56,11 @@ def analyze():
         orig_data = pd.read_csv(StringIO(session['data']))
         new_data = orig_data[[xaxis_col, yaxis_col]] # set 0 to x axis, 1 to y axis
 
-        session['data'] = new_data.to_csv() 
+        session['data'] = new_data.to_csv(index=False) # removes the unnamed column
 
         plt.close()
-        common.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
-        img_name= common.create_plot_img('plot', 'png')
+        plotting.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
+        img_name= plotting.create_plot_img('plot', 'png')
             
         return render_template("analyze.html", img_name=img_name)
 
@@ -69,11 +69,30 @@ def analyze():
 def generate():
 
     data = pd.read_csv(StringIO(session['data']))
+    analysis = [key for key in request.form.keys()]
 
-    if request.form['regression']:
+    if 'regression' in analysis:
         lin_reg_img, lin_reg = ml.regression(data)
+    else:
+        lin_reg_img, lin_reg = None, None
 
-    return render_template('generate.html', lin_reg_img=lin_reg_img)
+    if 'cluster' in analysis:
+        k = int(request.form['num-clusters'])
+        cluster_img, cluster = ml.cluster(data, k)
+    else:
+        cluster_img, cluster =  None, None
+
+    if 'outlier' in analysis:
+        threshold = float(request.form['threshold'])
+        outlier_img, outlier, anomalies = ml.outlier(data, threshold)
+    else:
+        outlier_img, outlier, anomalies = None, None
+
+    return render_template('generate.html', 
+        lin_reg_img=lin_reg_img, 
+        cluster_img=cluster_img,
+        outlier_img=outlier_img
+    )
 
 
 # Analysis can be done here
