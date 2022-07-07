@@ -95,7 +95,7 @@ def generate():
 
     if 'regression-outlier' in analysis:
         threshold = float(request.form['regression-threshold'])
-        lin_reg_outlier_img , lin_reg_outlier = ml.regression_outlier(data, threshold)
+        lin_reg_outlier_img , lin_reg_outlier, lin_reg_anomalies = ml.regression(data, outlier=True, percentage=threshold)
 
 
     return render_template('generate.html', 

@@ -17,7 +17,7 @@ def process_data(data):
     y = data[data.columns[-1]]
     return x, y
 
-def regression(data):
+def regression(data, outlier=False, percentage=0):
 
     x, y = process_data(data)
 
@@ -26,14 +26,36 @@ def regression(data):
     lin_reg = LinearRegression()
     lin_reg.fit(x_2d, y)
 
+    y_preds = lin_reg.predict(x_2d)
+
     # generate plot
     plt.close()
-    y_preds = lin_reg.predict(x_2d)
     plotting.plot_data(data)
     plt.plot(x, y_preds)    # plot the line
-    img_name = plotting.create_plot_img('lin_reg_plot', 'png')
 
-    return img_name, lin_reg
+    if not outlier:
+        img_name = plotting.create_plot_img('lin_reg_plot', 'png')
+        return img_name, lin_reg
+    else:
+
+        # reshape arrays to 2d array with each value being its own array
+        x = x.to_numpy().reshape(-1,1)
+        y_preds = y_preds.reshape(-1,1)
+
+        preds = np.concatenate((x, y_preds), axis=1)
+        actual = data.to_numpy()
+        dists = abs((actual-preds).reshape(1,-1)[0][1::2])    # distances are now in a 1d array
+
+        # obtain outliers
+        data = data.assign(distance=dists).sort_values(by='distance', ascending=False)
+        data = data.drop('distance', axis=1)    # so it does not interfere with plotting
+        anomalies = data.iloc[:int(len(data) * (percentage/100)) + 1]
+        print(anomalies)
+
+        # plot anomalies
+        plotting.plot_data(anomalies, color='r', marker='*', size=30)
+        img_name = plotting.create_plot_img('lin_reg_outlier_plot', 'png')
+        return img_name, lin_reg, anomalies
     
 def cluster(data, k):
     kmeans = KMeans(n_clusters=k, random_state=42)
@@ -67,8 +89,3 @@ def cluster_outlier(data, threshold):
     img_name = plotting.create_plot_img('cluster_outlier_plot', 'png')
 
     return img_name, gm, anomalies
-
-
-def regression_outlier(data, threshold):
-    pass
-    
