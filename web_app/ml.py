@@ -49,7 +49,7 @@ def cluster(data, k):
 
     return img_name, kmeans
 
-def outlier(data, threshold):
+def cluster_outlier(data, threshold):
     gm = GaussianMixture(n_components=1, n_init=10, random_state=42)
     gm.fit(data)
 
@@ -64,6 +64,11 @@ def outlier(data, threshold):
     plotting.plot_data(data)
     plotting.plot_centroids(gm.means_, gm.weights_)
     plotting.plot_data(anomalies, color='r', marker='*', size=30)
-    img_name = plotting.create_plot_img('outlier_plot', 'png')
+    img_name = plotting.create_plot_img('cluster_outlier_plot', 'png')
 
     return img_name, gm, anomalies
+
+
+def regression_outlier(data, threshold):
+    pass
+    

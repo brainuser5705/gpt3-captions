@@ -71,27 +71,38 @@ def generate():
     data = pd.read_csv(StringIO(session['data']))
     analysis = [key for key in request.form.keys()]
 
-    if 'regression' in analysis:
-        lin_reg_img, lin_reg = ml.regression(data)
-    else:
-        lin_reg_img, lin_reg = None, None
+    cluster_img = None
+    cluster = None
+    cluster_outlier_img = None
+    cluseter_outlier = None
+    cluster_anomalies = None
 
     if 'cluster' in analysis:
         k = int(request.form['num-clusters'])
         cluster_img, cluster = ml.cluster(data, k)
-    else:
-        cluster_img, cluster =  None, None
 
-    if 'outlier' in analysis:
-        threshold = float(request.form['threshold'])
-        outlier_img, outlier, anomalies = ml.outlier(data, threshold)
-    else:
-        outlier_img, outlier, anomalies = None, None
+    if 'cluster-outlier' in analysis:
+        threshold = float(request.form['cluster-threshold'])
+        cluster_outlier_img, cluster_outlier, cluster_anomalies = ml.cluster_outlier(data, threshold)
+
+    lin_reg_img = None
+    lin_reg = None
+    lin_reg_outlier_img = None
+    lin_reg_outlier = None
+
+    if 'regression' in analysis:
+        lin_reg_img, lin_reg = ml.regression(data)
+
+    if 'regression-outlier' in analysis:
+        threshold = float(request.form['regression-threshold'])
+        lin_reg_outlier_img , lin_reg_outlier = ml.regression_outlier(data, threshold)
+
 
     return render_template('generate.html', 
         lin_reg_img=lin_reg_img, 
         cluster_img=cluster_img,
-        outlier_img=outlier_img
+        cluster_outlier_img=cluster_outlier_img,
+        lin_reg_outlier_img=lin_reg_outlier_img
     )
 
 

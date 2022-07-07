@@ -9,18 +9,50 @@
     <h3>Select which type of analysis you wish to perform:</h3>
 
     <form action="/generate" method="POST">
-        <input type="checkbox" id="cluster" name="cluster" value="true">
-        <label for="cluster">Cluster</label><br>
-        <label for="num-clusters">&nbsp;Number of clusters:</label>
-        <input type="number" id="num-clusters" name="num-clusters" value=1><br>
-        <input type="checkbox" id="regression" name="regression" value="true">
-        <label for="regression">Regression</label><br>
-        <input type="checkbox" id="outlier" name="outlier" value="true">
-        <label for="outlier">Outlier</label><br>
-        <label for="threshold">&nbsp;Outlier threshold percentage:</label>
-        <i>Percentange of the dataset will be located in areas below that threshold density. Lower if too many false positives. Raise if too many false negatives.</i><br>
-        <input type="number" id="threshold" name="threshold" min=0 max=100 step=1 value=2>%<br>
+        <fieldset>
+            <legend>Cluster</legend>
+            <input type="checkbox" id="cluster" name="cluster" value="true">
+            <label for="cluster">Identify clusters (<i>Uses KMeans algorithm</i>)</label><br>
+            
+            <ul>
+                <li>
+                    <label for="num-clusters">Number of clusters:</label>
+                    <input type="number" id="num-clusters" name="num-clusters" value=1><br>
+                </li>
+            </ul>
+            
+            <input type="checkbox" id="cluster-outlier" name="cluster-outlier" value="true">
+            <label for="cluster-outlier">Identify outliers from clusters (<i>Uses Gaussian Mixtures</i>)</label><br>
 
+            <ul>
+                <li>
+                    <label for="cluster-threshold">Threshold percentage:</label>
+                    <i>Percentange of the dataset will be located in areas below calculated threshold density.<br/>
+                        (Lower if too many false positives. Raise if too many false negatives.)</i>
+                    <input type="number" id="cluster-threshold" name="cluster-threshold" min=0 max=100 step=1 value=2>%
+                </li>
+            </ul>
+            
+        </fieldset>
+        
+        <fieldset>
+            <legend>Regression</legend>
+            <input type="checkbox" id="regression" name="regression" value="true">
+            <label for="regression">Regression</label><br>
+
+            <input type="checkbox" id="regression-outlier" name="regression-outlier" value="true">
+            <label for="regression-outlier">Identify outliers from line trend</label><br>
+
+            <ul>
+                <li>
+                    <label for="regression-threshold">Percentage:</label>
+                    <i>Percentage of dataset will be identify as outlier based on the distance between actual value and predicted value.</i>
+                    <input type="number" id="regression-threshold" name="regression-threshold" min=0 max=100 step=1 value=10>%
+                </li>
+            </ul>
+            
+        </fieldset>
+        
         <input type="Submit" value="Analyze data">
     </form>
 
