@@ -16,6 +16,23 @@
         <h4>Cluster Outlier</h4>
         <img width="500" src="{{ url_for('static', filename=gm_img) }}"/>
 
+        <li>
+            <b>Anomalies Found</b>
+            <table>
+                <tr>
+                    <th>X</th>
+                    <th>Y</th>
+                </tr>
+                {% for row in gm_anomalies.values %}
+                    <tr>
+                        {% for value in row %}
+                            <td>{{value}}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </li>
+
     {% endif %}
 
     {% if lin_reg_img %}
@@ -40,19 +57,29 @@
             <li><b>Intercept</b>: {{lin_reg.intercept_}}</li>
             <li><b>Coefficient:</b> {{ lin_reg.coef_ }}</li>
             <li>
-                <b>Anomalies</b>
+                <b>Anomalies Found</b>
                 <table>
                     <tr>
                         <th>X</th>
                         <th>Y</th>
                     </tr>
-                    <tr>
-                        
-                    </tr>
+                    {% for row in lin_reg_anomalies.values %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{value}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
                 </table>
             </li>
         </ul>
     {% endif %}
+    
+    <form action="/result" method="POST">
+        <label for="query">Query generated:</label><br>
+        <textarea id="query" name="query" rows="20" cols="75">{{ text }}</textarea><br>
+        <input type="submit" value="Submit">
+    </form>
 
 {% endblock content %}
    

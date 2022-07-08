@@ -8,8 +8,10 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
 import plotting
 import ml
+import gpt
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')    # to use for sessions
@@ -61,12 +63,22 @@ def analyze():
         plt.close()
         plotting.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
         img_name= plotting.create_plot_img('plot', 'png')
+
+        session['title'] = title
+        session['x-axis'] = xaxis_col
+        session['y-axis'] = yaxis_col
             
         return render_template("analyze.html", img_name=img_name)
 
 
 @app.route("/generate", methods=["POST"])
 def generate():
+
+    text = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
+                session['title'], 
+                session['x-axis'], 
+                session['y-axis']
+            )
 
     data = pd.read_csv(StringIO(session['data']))
     analysis = [key for key in request.form.keys()]
@@ -108,8 +120,18 @@ def generate():
         kmeans=kmeans,
         gm=gm,
         gm_anomalies=gm_anomalies,
+        text=text
     )
 
+@app.route('/result', methods=['POST'])
+def result():
+
+    if request.method == 'POST':
+
+        prompt = request.form['query']
+        response = gpt.send(prompt)
+
+        return render_template('result.html', response=response)
 
 # Analysis can be done here
 def get_data_info(data):
