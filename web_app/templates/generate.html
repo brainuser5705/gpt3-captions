@@ -4,17 +4,17 @@
 
     <h3>Analysis Results: </h3> 
 
-    {% if cluster_img %}
+    {% if kmeans_img %}
 
         <h4>Cluster</h4>
-        <img width="500" src="{{ url_for('static', filename=cluster_img) }}"/>
+        <img width="500" src="{{ url_for('static', filename=kmeans_img) }}"/>
     
     {% endif %}
 
-    {% if cluster_outlier_img %}
+    {% if gm_img %}
 
         <h4>Cluster Outlier</h4>
-        <img width="500" src="{{ url_for('static', filename=cluster_outlier_img) }}"/>
+        <img width="500" src="{{ url_for('static', filename=gm_img) }}"/>
 
     {% endif %}
 
@@ -22,6 +22,11 @@
 
         <h4>Linear Regression</h4>
         <img width="500" src="{{ url_for('static', filename=lin_reg_img) }}"/>
+
+        <ul>
+            <li><b>Intercept</b>: {{lin_reg.intercept_}}</li>
+            <li><b>Coefficient:</b> {{ lin_reg.coef_ }}</li>
+        </ul>
 
     {% endif %}
 
@@ -31,6 +36,22 @@
         <h4>Linear Regression Outlier</h4>
         <img width="500" src="{{ url_for('static', filename=lin_reg_outlier_img) }}"/>
 
+        <ul>
+            <li><b>Intercept</b>: {{lin_reg.intercept_}}</li>
+            <li><b>Coefficient:</b> {{ lin_reg.coef_ }}</li>
+            <li>
+                <b>Anomalies</b>
+                <table>
+                    <tr>
+                        <th>X</th>
+                        <th>Y</th>
+                    </tr>
+                    <tr>
+                        
+                    </tr>
+                </table>
+            </li>
+        </ul>
     {% endif %}
 
 {% endblock content %}
