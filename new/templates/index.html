@@ -2,24 +2,20 @@
 {% block content %}
     <h1>Hello!</h1>
     <button id="next-button">Next</button>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            button = document.getElementById('next-button');
+            button.onclick = () => {
+                const request = new XMLHttpRequest();
+                request.open('POST', '/page');
+                request.onload = () =>{
+                    const newHtml = request.responseText;
+                    // rewrite the body tag
+                    document.querySelector('body').innerHTML = newHtml;
+                };
+                request.send();
+            }
+        });
+    </script>
 {% endblock content %}
-
-{% block script %}
-    document.addEventListener('DOMContentLoaded', () => {
-        button = document.getElementById('next-button');
-        button.onclick = () => {
-            const request = new XMLHttpRequest();
-            request.open('POST', '/page');
-            request.onload = () =>{
-                const response = request.responseText;
-                console.log(request.responseText);
-
-                // rewrite the document
-                document.open();
-                document.write(request.responseText);
-                document.close();
-            };
-            request.send();
-        }
-    });
-{% endblock script %}
