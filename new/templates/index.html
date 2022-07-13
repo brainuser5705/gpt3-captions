@@ -1,21 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'slide.html' %}
+
 {% block content %}
     <h1>Hello!</h1>
     <button id="next-button">Next</button>
-
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            button = document.getElementById('next-button');
-            button.onclick = () => {
-                const request = new XMLHttpRequest();
-                request.open('POST', '/page');
-                request.onload = () =>{
-                    const newHtml = request.responseText;
-                    // rewrite the body tag
-                    document.querySelector('body').innerHTML = newHtml;
-                };
-                request.send();
-            }
-        });
-    </script>
 {% endblock content %}
+
+{% block url %}/page{% endblock url %}
