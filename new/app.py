@@ -1,14 +1,14 @@
-from flask import Flask, request, render_template
-
+from flask import Flask, request, render_template, redirect, url_for
 
 app = Flask(__name__)
+app.config['SESSION_TYPE'] = 'filesystem'
 
 @app.route("/", methods=['GET'])
 def index():
 
     return render_template("index.html")
 
-@app.route("/page", methods=['POST'])
-def another_page():
+@app.route("/upload", methods=['POST'])
+def upload():
     
-    return render_template("another-page.html")
+    return redirect(url_for('index'))

@@ -12,11 +12,14 @@
         <b>Anomalies</b>
         <table>
             <tr>
-                <th>X</th>
-                <th>Y</th>
+                <th>Include in query?</th>
+            {% for col in anomalies.columns %}
+                <th>{{ col }}</th>
+            {% endfor %}
             </tr>
             {% for row in anomalies.values %}
                 <tr>
+                    <td><input type="checkbox"></td>
                     {% for value in row %}
                         <td>{{value}}</td>
                     {% endfor %}
@@ -27,7 +30,7 @@
     
     <form action="/result" method="POST">
         <label for="query">Query generated:</label><br>
-        <textarea id="query" name="query" rows="20" cols="75">{{ text }}</textarea><br>
+        <textarea id="query" name="query" rows="20" cols="75">{{ query }}</textarea><br>
         <input type="submit" value="Submit">
     </form>
 

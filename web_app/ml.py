@@ -13,14 +13,11 @@ from flask import session
 # To make consistent results for the same uploaded dataset
 np.random.seed(42)
 
-def process_data(data):
-    x = data[session['x-axis']]
-    y = data[session['y-axis']]
-    return x, y
-
 def regression(data, percentage=0):
 
-    x, y = process_data(data)
+    scatter_data = data[[session['x-axis'], session['y-axis']]]
+
+    x, y = scatter_data[scatter_data.columns[0]], scatter_data[scatter_data.columns[1]]
 
     # X must be reshaped into a 2d array
     x_2d = x.to_numpy().reshape(x.shape[0], 1)
@@ -29,24 +26,25 @@ def regression(data, percentage=0):
 
     y_preds = lin_reg.predict(x_2d)
 
-    # reshape arrays to 2d array with each value being its own array
-    x = x.to_numpy().reshape(-1,1)
-    y_preds = y_preds.reshape(-1,1)
-    preds = np.concatenate((x, y_preds), axis=1)
-    actual = data[[session['x-axis'], session['y-axis']]].to_numpy()
-    dists = abs((actual-preds).reshape(1,-1)[0][1::2])    # distances are now in a 1d array
+    # generate plot
+    plt.close()
+    plotting.plot_data(scatter_data)
+    plt.plot(x, y_preds)    # plot the line
 
     # obtain outliers
+    x = x.to_numpy().reshape(-1,1)  # reshape arrays to 2d array with each value being its own array
+    y_preds = y_preds.reshape(-1,1)
+    preds = np.concatenate((x, y_preds), axis=1)
+    actual = scatter_data.to_numpy()
+    dists = abs((actual-preds).reshape(1,-1)[0][1::2])    # distances are now in a 1d array
+
     data = data.assign(distance=dists).sort_values(by='distance', ascending=False)
     data = data.drop('distance', axis=1)    # so it does not interfere with plotting
     num_anomalies = int(len(data) * (percentage/100))
     anomalies = data.iloc[:num_anomalies]
 
-    # generate plot
-    plt.close()
-    plotting.plot_data(data)
-    plt.plot(x, y_preds)    # plot the line
-    plotting.plot_data(anomalies, color='r', marker='*', size=30) # plot anomalies
+    # plot anomalies
+    plotting.plot_data(scatter_data.iloc[anomalies.index,:], color='r', marker='*', size=30)
     img_name = plotting.create_plot_img('lin_reg_plot', 'png')
     return img_name, lin_reg, anomalies
     
