@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h3>Analysis Results: </h3> 
+
+    {% if img %}
+    <img width="500" src="{{ url_for('static', filename=img) }}"/>
+    {% endif %}
+
+    {% if not anomalies.empty %}
+        <b>Anomalies</b>
+        <table>
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+            </tr>
+            {% for row in anomalies.values %}
+                <tr>
+                    {% for value in row %}
+                        <td>{{value}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    
+    <form action="/result" method="POST">
+        <label for="query">Query generated:</label><br>
+        <textarea id="query" name="query" rows="20" cols="75">{{ text }}</textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock content %}
+   

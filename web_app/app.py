@@ -8,21 +8,24 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 import plotting
 import ml
-import gpt
+
+import openai
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')    # to use for sessions
 
 # Using server side sessions for larger cookie space
+app.secret_key = os.getenv('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-mpl.use('Agg')  # Need this because of the main thread error, switching to backend that does not require GUI
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-@app.route("/", methods=("GET", "POST"))
+# Need this because of the main thread error, switching to backend that does not require GUI
+mpl.use('Agg')  
+
+@app.route("/", methods=["GET"])
 def index():
     session.clear()
     return render_template("index.html")
@@ -31,109 +34,37 @@ def index():
 @app.route("/config", methods=['POST'])
 def config():
 
-    if request.method == 'POST':
+    dataset = request.files['dataset']  # get the uploaded dataset from the form
+    bytes = dataset.read()
+    data = bytes.decode()   # convert bytes to string
+    df = pd.read_csv(StringIO(data))    # must make data into a file like obj for Pandas
 
-        dataset = request.files['dataset']  # get the uploaded dataset from the form
-        bytes = dataset.read()
-        data = bytes.decode()   # convert bytes to string
-        df = pd.read_csv(StringIO(data))    # must make data into a file like obj for Pandas
+    session['data'] = data
+    metadata = get_data_info(df)
 
-        session['data'] = data
-
-        metadata = get_data_info(df)
-
-        # include url_for to get the url for the analyze view
-        return render_template('config.html', metadata=metadata)
+    # include url_for to get the url for the analyze view
+    return render_template('config.html', metadata=metadata)
 
 
-@app.route("/analyze", methods=("GET", "POST"))
+@app.route("/analyze", methods=["POST"])
 def analyze():
 
-    if request.method == 'POST':
+    session['title'] = request.form['title']
+    session['x-axis'] = request.form['x-axis']
+    session['y-axis'] = request.form['y-axis']
+    
+    # Extract the selected columns from the full dataframe
+    full_data = pd.read_csv(StringIO(session['data']))
+    scatter_data = full_data[[session['x-axis'], session['y-axis']]]
+
+    # Create the plot image
+    plt.close()
+    plotting.plot_data(scatter_data)
+    img_name= plotting.create_plot_img('plot', 'png')
         
-        title = request.form['title']
-        xaxis_col = request.form['x-axis']
-        yaxis_col = request.form['y-axis']
-        
-        orig_data = pd.read_csv(StringIO(session['data']))
-        new_data = orig_data[[xaxis_col, yaxis_col]] # set 0 to x axis, 1 to y axis
-
-        session['data'] = new_data.to_csv(index=False) # removes the unnamed column
-
-        plt.close()
-        plotting.plot_data(new_data, title=title, xlabel=xaxis_col, ylabel=yaxis_col)
-        img_name= plotting.create_plot_img('plot', 'png')
-
-        session['title'] = title
-        session['x-axis'] = xaxis_col
-        session['y-axis'] = yaxis_col
-            
-        return render_template("analyze.html", img_name=img_name)
+    return render_template("analyze.html", img_name=img_name)
 
 
-@app.route("/generate", methods=["POST"])
-def generate():
-
-    text = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
-                session['title'], 
-                session['x-axis'], 
-                session['y-axis']
-            )
-
-    data = pd.read_csv(StringIO(session['data']))
-    analysis = [key for key in request.form.keys()]
-
-    kmeans_img = None
-    kmeans = None
-    gm_img = None
-    gm = None
-    gm_anomalies = None
-
-    if 'cluster' in analysis:
-        k = int(request.form['num-clusters'])
-        kmeans_img, kmeans = ml.cluster(data, k)
-
-    if 'cluster-outlier' in analysis:
-        threshold = float(request.form['cluster-threshold'])
-        gm_img, gm, gm_anomalies = ml.cluster_outlier(data, threshold)
-
-    lin_reg_img = None
-    lin_reg = None
-    lin_reg_outlier_img = None
-    lin_reg_anomalies = None
-
-    if 'regression' in analysis:
-        lin_reg_img, lin_reg = ml.regression(data)
-
-    if 'regression-outlier' in analysis:
-        threshold = float(request.form['regression-threshold'])
-        lin_reg_outlier_img , lin_reg, lin_reg_anomalies = ml.regression(data, outlier=True, percentage=threshold)
-
-
-    return render_template('generate.html', 
-        lin_reg_img=lin_reg_img, 
-        kmeans_img=kmeans_img,
-        gm_img=gm_img,
-        lin_reg_outlier_img=lin_reg_outlier_img,
-        lin_reg=lin_reg,
-        lin_reg_anomalies=lin_reg_anomalies,
-        kmeans=kmeans,
-        gm=gm,
-        gm_anomalies=gm_anomalies,
-        text=text
-    )
-
-@app.route('/result', methods=['POST'])
-def result():
-
-    if request.method == 'POST':
-
-        prompt = request.form['query']
-        response = gpt.send(prompt)
-
-        return render_template('result.html', response=response)
-
-# Analysis can be done here
 def get_data_info(data):
     data_info = {
         'num_cols': len(data.columns),
@@ -142,3 +73,48 @@ def get_data_info(data):
     }
     return data_info
 
+
+@app.route("/generate", methods=["POST"])
+def generate():
+
+    full_data = pd.read_csv(StringIO(session['data']))
+
+    # scatter_data = scatter_data = full_data[[session['x-axis'], session['y-axis']]]
+
+    # Get all checked inputs from form
+    analysis = [key for key in request.form.keys()]
+
+    if 'cluster' in analysis:
+        num_clusters = int(request.form['num-clusters'])
+        percentage = float(request.form['cluster-percentage'])
+        img, model, anomalies = ml.cluster(full_data, percentage)
+    elif 'regression' in analysis:
+        percentage = float(request.form['regression-percentage'])
+        img, model, anomalies = ml.regression(full_data, percentage)
+
+    query, response = get_query(full_data, model, anomalies)
+
+    return render_template('results.html',
+        img=img,
+        model=model,
+        anomalies=anomalies,
+        query=query,
+        response=response
+    )
+
+
+def get_query(data, model, anomalies):
+    query = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
+        session['title'], 
+        session['x-axis'], 
+        session['y-axis']
+    )
+
+    response = openai.Completion.create(
+        model='text-davinci-002',
+        prompt=query,
+        temperature=0.5,
+        max_tokens=2048
+    )
+
+    return query, response.choices[0].text

@@ -4,14 +4,16 @@ import numpy as np
 
 from matplotlib.colors import LogNorm
 
-def plot_data(data, title='', xlabel='', ylabel='', color='k', size=2, marker='.'):
+from flask import session
+
+def plot_data(data, color='k', size=2, marker='.'):
     """
     Assumes that data is a Pandas dataframes with two columns
     """
     plt.scatter(data.iloc[:,-2], data.iloc[:,-1], c=color, s=size, marker=marker)
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    plt.title(session['title'])
+    plt.xlabel(session['x-axis'])
+    plt.ylabel(session['y-axis'])
 
 
 def create_plot_img(fig_name, fig_extension):
