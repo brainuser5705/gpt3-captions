@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type='file' value="Upload Dataset" id="next-button">
+    </form>
+
+    <div>
+        <b>Only supports:</b>
+        <ul>
+            <li>Data must contain <b>at least two numeric variables</b></li>
+            <li><b>File types:</b> .csv</li>
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            button = document.getElementById('next-button');
+            button.onchange = () => {
+
+                // auto submit form when file is uploaded
+                document.querySelector('form').submit();
+
+                const request = new XMLHttpRequest();
+                request.open('POST', "/upload");
+
+                // rewrite the body tag
+                request.onload = () =>{
+                    const newHtml = request.responseText;
+                    document.querySelector('body').innerHTML = newHtml;
+                };
+                
+                request.send();
+            }
+        });
+    </script>
+
+{% endblock body %}

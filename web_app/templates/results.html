@@ -5,10 +5,13 @@
     <h3>Analysis Results: </h3> 
 
     {% if img %}
-    <img width="500" src="{{ url_for('static', filename=img) }}"/>
+    <div>
+        <img width="500" src="{{ url_for('static', filename=img) }}"/>
+    </div>
     {% endif %}
 
     {% if not anomalies.empty %}
+    <div>
         <b>Anomalies</b>
         <table>
             <tr>
@@ -26,13 +29,42 @@
                 </tr>
             {% endfor %}
         </table>
+    </div>
     {% endif %}
-    
+
+    <div>
+        <b>Select what to include in the query:</b><br>
+        <input type="checkbox" class="option" name="title"> Title <br>
+        <input type="checkbox" class="option" name="labels"> Axes Label <br>
+        <input type="checkbox" class="option" name="attributes"> Names of other columns <br>
+        {% if type == 'regression' %}
+        <input type="checkbox" class="option" name="lin-reg-coef"> Linear Regression Coefficient <br>
+        {% endif %}
+        <i>More options in progress: Outliers and clusters</i>
+    </div>
+
     <form action="/result" method="POST">
         <label for="query">Query generated:</label><br>
         <textarea id="query" name="query" rows="20" cols="75">{{ query }}</textarea><br>
         <input type="submit" value="Submit">
     </form>
+
+    <script type="text/javascript">
+        options = document.getElementsByClassName("option");
+        for ( option of options){
+            option.onclick = () => {
+                const request = new XMLHttpRequest();
+                request.open("POST", "/prompt")
+                request.onload = () => {
+                    console.log("does this work?")
+                    // var jsonResponse = JSON.parse(request.responseText);
+                    // console.log(jsonResponse)  
+                }
+                var jsonData = {"name" : "test"}
+                request.send(JSON.stringify(jsonData));
+            }
+        }
+    </script>
 
 {% endblock content %}
    

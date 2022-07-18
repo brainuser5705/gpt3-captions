@@ -79,42 +79,52 @@ def generate():
 
     full_data = pd.read_csv(StringIO(session['data']))
 
-    # scatter_data = scatter_data = full_data[[session['x-axis'], session['y-axis']]]
-
     # Get all checked inputs from form
     analysis = [key for key in request.form.keys()]
 
+    prompt = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
+        session['title'], 
+        session['x-axis'], 
+        session['y-axis'])
+
     if 'cluster' in analysis:
+        type = 'cluster'
         num_clusters = int(request.form['num-clusters'])
         percentage = float(request.form['cluster-percentage'])
         img, model, anomalies = ml.cluster(full_data, percentage)
+
     elif 'regression' in analysis:
+        type = 'regression'
         percentage = float(request.form['regression-percentage'])
         img, model, anomalies = ml.regression(full_data, percentage)
-
-    query, response = get_query(full_data, model, anomalies)
 
     return render_template('results.html',
         img=img,
         model=model,
         anomalies=anomalies,
-        query=query,
-        response=response
+        # query=query,
+        # response=response
     )
 
 
-def get_query(data, model, anomalies):
-    query = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
-        session['title'], 
-        session['x-axis'], 
-        session['y-axis']
-    )
+@app.route("/prompt", methods=["POST"])
+def prompt():
+    print(request)
+    
 
-    response = openai.Completion.create(
-        model='text-davinci-002',
-        prompt=query,
-        temperature=0.5,
-        max_tokens=2048
-    )
+# @app.route('/query', methods=['POST'])
+# def query():
+#     query = 'Generate an engaging caption for a plot titled "{}" with x-axis labeled as "{}" and y-axis labeled as "{}".'.format(
+#         session['title'], 
+#         session['x-axis'], 
+#         session['y-axis']
+#     )
 
-    return query, response.choices[0].text
+#     response = openai.Completion.create(
+#         model='text-davinci-002',
+#         prompt=query,
+#         temperature=0.5,
+#         max_tokens=2048
+#     )
+
+#     return query, response.choices[0].text

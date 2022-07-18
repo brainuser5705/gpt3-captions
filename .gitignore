@@ -17,3 +17,4 @@ build/
 .DS_STORE
 
 .env
+web_app/flask_session/
