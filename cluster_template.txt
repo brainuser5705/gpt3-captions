@@ -1,0 +1,19 @@
+{title}
+
+====================
+METADATA
+====================
+Dataset: {dataset_name}
+Columns: {columns}
+X-axis: {x_col}
+Y-axis: {y_col}
+Domain: {x_min} - {x_max}
+Range: {y_min} - {y_max}
+
+===================
+CLUSTER
+===================
+Number of clusters: {num_clusters}
+Epsilon: {eps}
+Minimum samples: {min_samples}
+Cluster Size Ranking:

@@ -1,0 +1,32 @@
+bmi VS charges
+
+====================
+METADATA
+====================
+Dataset: data/insurance.csv
+Columns: age, sex, bmi, children, smoker, region, charges
+X-axis: bmi
+Y-axis: charges
+Domain: 15.96 - 53.13
+Range: 1121.8739 - 63770.42801
+
+===================
+CLUSTER
+===================
+Number of clusters: 10
+Epsilon: 0.5
+Minimum samples: 5
+Cluster Size Ranking:
+0. (0, 1328)
+
+Outliers:
+- 32 (17.765, 32734.1863)
+- 54 (47.41, 63770.42801)
+- 31 (38.095, 58571.07448)
+- 40 (41.42, 28476.73499)
+- 23 (50.38, 2438.0552)
+- 45 (22.895, 35069.37452)
+- 22 (52.58, 44501.3982)
+- 52 (34.485, 60021.39897)
+- 45 (30.36, 62592.87309)
+- 18 (53.13, 1163.4627)

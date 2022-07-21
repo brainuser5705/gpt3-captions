@@ -1,0 +1,28 @@
+Daily_Customer_Count VS Store_Sales
+
+====================
+METADATA
+====================
+Dataset: data/Stores.csv
+Columns: Store_ID, Store_Area, Items_Available, Daily_Customer_Count, Store_Sales
+X-axis: Daily_Customer_Count
+Y-axis: Store_Sales
+Domain: 10 - 1560
+Range: 14920 - 116320
+
+===================
+CLUSTER
+===================
+Number of clusters: 6
+Epsilon: 0.5
+Minimum samples: 5
+Cluster Size Ranking:
+0. (0, 890)
+
+Outliers:
+- 40 (10, 45480)
+- 373 (1340, 21650)
+- 409 (1310, 102310)
+- 650 (860, 116320)
+- 877 (100, 88270)
+- 888 (140, 92370)

@@ -1,0 +1,4 @@
+Dataset Name,X_Column,Y_Column,I_Column,eps,min_samples,Trend/Cluster Count,Outliers?
+insurance,bmi,charges,age,0.5,5,One,Multiple(10)
+Mall_Customers,Annual Income (k$),Spending Score (1-100),CustomerID,0.45,10,Multiple(5),Multiple(A lot)
+Stores,Daily_Customer_Count,Store_Sales,Store_ID,0.5,5,One,Multiple(6)

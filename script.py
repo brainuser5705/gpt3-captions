@@ -12,12 +12,16 @@ def run(csv_file):
             x_col = row[1]
             y_col = row[2]
             i_col = row[3]
-            outlier = bool(row[4])
+            # outlier = bool(row[4])
 
-            ml.perform_lin_reg('data/' + dataset_name, x_col, y_col, i_col, outlier)
+            eps = float(row[4])
+            min_samples = int(row[5])
+
+            # ml.perform_lin_reg('data/' + dataset_name, x_col, y_col, i_col, outlier)
+            ml.perform_cluster('data/' + dataset_name, x_col, y_col, i_col, eps=eps, min_samples=min_samples)
 
 def main():
-    run('datasets-regression.csv')
+    run('datasets-cluster.csv')
     
     
 if __name__ == '__main__':
