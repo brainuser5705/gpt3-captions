@@ -131,15 +131,16 @@ def perform_cluster(dataset_name, x_col, y_col, i_col=None, eps=0.5, min_samples
     for cluster in clusters:
         sizes[cluster] = len(dbscan.labels_[dbscan.labels_==cluster])
     
+    plt.close()
+    plt.figure(figsize=(8,8))
+
     # Plot each point, labeled and colored by its cluster
     color = cm.Set2(np.linspace(0,1,len(clusters)))
     for clust, c in zip(clusters, color):
         points = data[dbscan.labels_==clust]
         plt.scatter(points[x_col], points[y_col], color=c, s=20, label=clust)
     
-    plt.scatter(outliers[x_col], outliers[y_col], c='r', s=30, marker='x')
-
-    plt.tight_layout()
+    plt.scatter(outliers[x_col], outliers[y_col], c='r', s=30, marker='x', label='Outlier')
     
     plt.xlabel(x_col)
     plt.ylabel(y_col)
@@ -147,6 +148,8 @@ def perform_cluster(dataset_name, x_col, y_col, i_col=None, eps=0.5, min_samples
     
     # places legend to right of plot, taken from stackoverflow
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title='Cluster')
+
+    plt.tight_layout()
     
     filename = generate_filename(x_col, y_col)
     save_plot(filename, 'cluster')
