@@ -1,0 +1,8 @@
+Dataset Name,X_Column,Y_Column,I_Column,Outliers,Trend/Cluster Count,Outliers?
+world_happiness,GDP per capita,Score,Country or region,1,Positive,One
+world_happiness,GDP per capita,Healthy life expectancy,Country or region,1,Positive,One
+auto-mpg,weight,acceleration,car name,1,Negative,Two
+auto-mpg,horsepower,weight,car name,1,Positive,One
+auto-mpg,weight,horsepower,car name,1,Negative,Multiple
+Stores,Store_Area,Items_Available,Store_ID,0,Positive,None
+Stores,Daily_Customer_Count,Store_Sales,Store_ID,1,One,Multiple(6)

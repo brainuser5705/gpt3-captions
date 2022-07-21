@@ -1,0 +1,24 @@
+GDP per capita VS Score
+
+====================
+METADATA
+====================
+Dataset: data/world_happiness.csv
+Columns: Overall rank, Country or region, Score, GDP per capita, Social support, Healthy life expectancy, Freedom to make life choices, Generosity, Perceptions of corruption, Stu_residual
+X-axis: GDP per capita
+Y-axis: Score
+Domain: 0.0 - 1.684
+Range: 2.853 - 7.769
+
+====================
+CORRELATION
+====================
+Correlation: 0.7938828678781273
+
+====================
+REGRESSION
+====================
+Intercept: 3.3993451782924184
+Slope: 2.2181480010083545
+Outliers:
+- Botswana (1.041, 3.488)

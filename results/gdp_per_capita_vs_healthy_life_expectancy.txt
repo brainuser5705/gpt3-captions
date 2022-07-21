@@ -1,0 +1,24 @@
+GDP per capita VS Healthy life expectancy
+
+====================
+METADATA
+====================
+Dataset: data/world_happiness.csv
+Columns: Overall rank, Country or region, Score, GDP per capita, Social support, Healthy life expectancy, Freedom to make life choices, Generosity, Perceptions of corruption, Stu_residual
+X-axis: GDP per capita
+Y-axis: Healthy life expectancy
+Domain: 0.0 - 1.684
+Range: 0.0 - 1.141
+
+====================
+CORRELATION
+====================
+Correlation: 0.8354621150416074
+
+====================
+REGRESSION
+====================
+Intercept: 0.2656477601952532
+Slope: 0.5077579754646895
+Outliers:
+- Swaziland (0.811, 0.0)

@@ -1,0 +1,25 @@
+weight VS acceleration
+
+====================
+METADATA
+====================
+Dataset: data/auto-mpg.csv
+Columns: mpg, cylinders, displacement, horsepower, weight, acceleration, model year, origin, car name, Stu_residual
+X-axis: weight
+Y-axis: acceleration
+Domain: 1613 - 5140
+Range: 8.0 - 24.8
+
+====================
+CORRELATION
+====================
+Correlation: -0.4168392020037067
+
+====================
+REGRESSION
+====================
+Intercept: 19.572665809557837
+Slope: -0.0013538959875761042
+Outliers:
+- peugeot 504 (3190, 24.8)
+- vw pickup (2130, 24.6)

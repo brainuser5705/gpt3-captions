@@ -1,0 +1,24 @@
+horsepower VS weight
+
+====================
+METADATA
+====================
+Dataset: data/auto-mpg.csv
+Columns: mpg, cylinders, displacement, horsepower, weight, acceleration, model year, origin, car name, Stu_residual
+X-axis: horsepower
+Y-axis: weight
+Domain: 46 - 230
+Range: 1613 - 5140
+
+====================
+CORRELATION
+====================
+Correlation: 0.8645377375741445
+
+====================
+REGRESSION
+====================
+Intercept: 984.5003267702386
+Slope: 19.078161552697477
+Outliers:
+- buick estate wagon (sw) (225, 3086)

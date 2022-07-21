@@ -1,0 +1,24 @@
+Store_Area VS Items_Available
+
+====================
+METADATA
+====================
+Dataset: data/Stores.csv
+Columns: Store_ID, Store_Area, Items_Available, Daily_Customer_Count, Store_Sales, Stu_residual
+X-axis: Store_Area
+Y-axis: Items_Available
+Domain: 775 - 2229
+Range: 932 - 2667
+
+====================
+CORRELATION
+====================
+Correlation: 0.9988907507528333
+
+====================
+REGRESSION
+====================
+Intercept: 3.966485697326391
+Slope: 1.1970228485974026
+Outliers:
+- 629.0 (2044.0, 2408.0)

@@ -1,0 +1,23 @@
+{title}
+
+====================
+METADATA
+====================
+Dataset: {dataset_name}
+Columns: {columns}
+X-axis: {x_col}
+Y-axis: {y_col}
+Domain: {x_min} - {x_max}
+Range: {y_min} - {y_max}
+
+====================
+CORRELATION
+====================
+Correlation: {correlation}
+
+====================
+REGRESSION
+====================
+Intercept: {intercept}
+Slope: {slope}
+Outliers:

@@ -1,0 +1,28 @@
+weight VS horsepower
+
+====================
+METADATA
+====================
+Dataset: data/auto-mpg.csv
+Columns: mpg, cylinders, displacement, horsepower, weight, acceleration, model year, origin, car name, Stu_residual
+X-axis: weight
+Y-axis: horsepower
+Domain: 1613 - 5140
+Range: 46 - 230
+
+====================
+CORRELATION
+====================
+Correlation: 0.8645377375741445
+
+====================
+REGRESSION
+====================
+Intercept: -12.183484703459422
+Slope: 0.03917701910770019
+Outliers:
+- chevrolet impala (4354, 220)
+- plymouth fury iii (4312, 215)
+- pontiac catalina (4425, 225)
+- buick estate wagon (sw) (3086, 225)
+- pontiac grand prix (4278, 230)
